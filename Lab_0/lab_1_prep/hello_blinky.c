@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <wiringPi.h>
-#include "timespec.h"
+#include "timespec.c"
 
 #define LED_PIN 29
 
@@ -11,7 +11,7 @@ int running = 1;
 
 void * fun_1(void * arg)
 {
-    struct timespec *ts;
+    struct timespec ts;
     while (running)
     {
         printf("X"); // letter X
