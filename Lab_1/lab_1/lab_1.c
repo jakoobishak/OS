@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <lttng/tracef.h>
 
 #include "lab_1.h"
 #include "thread_help.h"
@@ -37,7 +38,7 @@
 #define RT_PRIO_G           -1
 #define RT_PRIO_B           -1
 
-#define EXERCISE_TO_RUN     1
+#define EXERCISE_TO_RUN     2
 
 int running;  // leave this alone
 
@@ -132,9 +133,15 @@ void * ex2_red(void * arg)
 
 void * ex2_green(void * arg)
 {
-    while (running)
+    useconds_t g_period_us = 500 * 1000; // 0.5s
+    int v = LOW;
+    while(running)
     {
-        sleep(1);
+        v = pin_invert(v);
+        tracef("GREEN LED = %d", v);
+        digitalWrite(LED_G, v);
+        tracef("sleep(GREEN, %u usec)", g_period_us);
+        usleep(g_period_us);
     }
     return NULL;
 }

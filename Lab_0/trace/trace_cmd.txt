@@ -1,0 +1,1 @@
+/trace-beg.sh && ./trace-run.sh && ./trace-end.sh
