@@ -9,6 +9,7 @@
 
 #include "lab_1.h"
 #include "thread_help.h"
+#include "timespec.h"
 
 /*************************************************************
  *                                                           *
@@ -30,7 +31,7 @@
  * main.c:halting_function() for more details.               *
  *                                                           *
  *************************************************************/
-#define RUNTIME_MILLSEC     5000
+#define RUNTIME_MILLSEC     20000
 #define REALTIME_THREADS    0
 
 // run `chrt -m` to learn allowed values (SCHED_FIFO)
@@ -38,7 +39,7 @@
 #define RT_PRIO_G           -1
 #define RT_PRIO_B           -1
 
-#define EXERCISE_TO_RUN     2
+#define EXERCISE_TO_RUN     4
 
 int running;  // leave this alone
 
@@ -76,12 +77,12 @@ int pin_invert(int pin_state) {
 
 void * ex1_red(void * arg)
 {
-    useconds_t green_sleep_us = 1000 * 1000; // 1s
+    useconds_t red_sleep_us = 1000 * 1000; // 1s
     int v = LOW;
     while(running) {
         v = pin_invert(v);
         digitalWrite(LED_R, v);
-        usleep(green_sleep_us);
+        usleep(red_sleep_us);
     }
     return NULL;
 }
@@ -100,12 +101,12 @@ void * ex1_green(void * arg)
 
 void * ex1_blue(void * arg)
 {
-    useconds_t green_sleep_us = 200 * 1000; // 0.2s
+    useconds_t blue_sleep_us = 200 * 1000; // 0.2s
     int v = LOW;
     while(running) {
         v = pin_invert(v);
         digitalWrite(LED_B, v);
-        usleep(green_sleep_us);
+        usleep(blue_sleep_us);
     }
     return NULL;
 }
@@ -169,29 +170,56 @@ void   ex3_init()
 
 void * ex3_red(void * arg)
 {
-    while (running)
-    {
-        sleep(1);
+    uint32_t r_period_ms = 1000;
+    useconds_t r_period_us = r_period_ms * 1000;
+    uint32_t r_stress_ms = (uint32_t)(0.2 * (float) r_period_ms);
+    int v = LOW;
+
+    while(running) {
+        v = pin_invert(v);
+        tracef("Stressing for: %u ms", r_stress_ms);
+        cpu_stress(r_stress_ms);
+        tracef("RED LED = %d", v);
+        digitalWrite(LED_R, v);
+        usleep(r_period_us);
     }
     return NULL;
 }
 
 void * ex3_green(void * arg)
 {
+    uint32_t g_period_ms = 500;
+    useconds_t g_period_us = g_period_ms * 1000;
+    uint32_t g_stress_ms = (uint32_t)(0.2 * (float) g_period_ms);
+    int v = LOW;
+
     while (running)
     {
-        sleep(1);
+        v = pin_invert(v);
+        tracef("Stressing for: %u ms", g_stress_ms);
+        cpu_stress(g_stress_ms);
+        tracef("GREEN LED = %d", v);
+        digitalWrite(LED_G, v);
+        usleep(g_period_us);
     }
-    return NULL;
 }
 
 void * ex3_blue(void * arg)
 {
+    uint32_t b_period_ms = 200;
+    useconds_t b_period_us = b_period_ms * 1000;
+    uint32_t b_stress_ms = (uint32_t)(0.2 * (float) b_period_ms);
+    int v = LOW;
+
     while (running)
     {
-        sleep(1);
+        v = pin_invert(v);
+        tracef("Stressing for: %u ms", b_stress_ms);
+        cpu_stress(b_stress_ms);
+        tracef("BLUE LED = %d", v);
+        digitalWrite(LED_B, v);
+        usleep(b_period_us);
     }
-    return NULL;
 }
 
 
@@ -209,29 +237,56 @@ void   ex4_init()
 
 void * ex4_red(void * arg)
 {
-    while (running)
-    {
-        sleep(1);
+    uint32_t r_period_ms = 1000;
+    useconds_t r_period_us = r_period_ms * 1000;
+    uint32_t r_stress_ms = (uint32_t)(0.2 * (float) r_period_ms);
+    int v = LOW;
+
+    while(running) {
+        v = pin_invert(v);
+        tracef("Stressing for: %u ms", r_stress_ms);
+        cpu_stress(r_stress_ms);
+        tracef("RED LED = %d", v);
+        digitalWrite(LED_R, v);
+        usleep(r_period_us);
     }
     return NULL;
 }
 
 void * ex4_green(void * arg)
 {
+    uint32_t g_period_ms = 500;
+    useconds_t g_period_us = g_period_ms * 1000;
+    uint32_t g_stress_ms = (uint32_t)(0.2 * (float) g_period_ms);
+    int v = LOW;
+
     while (running)
     {
-        sleep(1);
+        v = pin_invert(v);
+        tracef("Stressing for: %u ms", g_stress_ms);
+        cpu_stress(g_stress_ms);
+        tracef("GREEN LED = %d", v);
+        digitalWrite(LED_G, v);
+        usleep(g_period_us);
     }
-    return NULL;
 }
 
 void * ex4_blue(void * arg)
 {
+    uint32_t b_period_ms = 200;
+    useconds_t b_period_us = b_period_ms * 1000;
+    uint32_t b_stress_ms = (uint32_t)(0.2 * (float) b_period_ms);
+    int v = LOW;
+
     while (running)
     {
-        sleep(1);
+        v = pin_invert(v);
+        tracef("Stressing for: %u ms", b_stress_ms);
+        cpu_stress(b_stress_ms);
+        tracef("BLUE LED = %d", v);
+        digitalWrite(LED_B, v);
+        usleep(b_period_us);
     }
-    return NULL;
 }
 
 
