@@ -23,6 +23,4 @@ void timespec_add_usec(struct timespec *ts, long us)
     {
         ts->tv_nsec = start_nsec;
     }
-
-    clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, ts, NULL);
 }
