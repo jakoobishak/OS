@@ -30,21 +30,22 @@
  * main.c:halting_function() for more details.               *
  *                                                           *
  *************************************************************/
-#define RUNTIME_MILLSEC     20000
-#define REALTIME_THREADS    1
+#define RUNTIME_MILLSEC     8000
+#define REALTIME_THREADS    0
 
 // run `chrt -m` to learn allowed values (SCHED_FIFO)
 #define RT_PRIO_R           3
 #define RT_PRIO_G           2
 #define RT_PRIO_B           1
 
-#define EXERCISE_TO_RUN     8
+#define EXERCISE_TO_RUN     9
 
 #define NANOSECOND 1000000000
 #define MILISECOND 1000
 
 int running;  // leave this alone
 struct timespec ex5_ts;
+pthread_mutex_t ex8_mut, ex9_mut_r, ex9_mut_g, ex9_mut_b;
 
 
 /*************************************************************
@@ -574,33 +575,81 @@ void * ex7_blue(void * arg)
 
 void   ex8_init()
 {
+    clock_gettime(CLOCK_REALTIME, &ex5_ts);
+    pthread_mutex_init(&ex8_mut, NULL);
 }
 
 void * ex8_red(void * arg)
 {
-    while (running)
-    {
-        sleep(1);
+    struct timespec wakeup;
+    wakeup.tv_sec = ex5_ts.tv_sec;
+    wakeup.tv_nsec = ex5_ts.tv_nsec;
+
+    uint32_t r_period_ms = 1000;
+    useconds_t r_period_us = r_period_ms * 1000;
+    uint32_t r_stress_ms = 50;
+    int v = LOW;
+
+    while(running) {
+
+        pthread_mutex_lock(&ex8_mut);
+        v = pin_invert(v);
+        cpu_stress(r_stress_ms);
+        digitalWrite(LED_R, v);
+        pthread_mutex_unlock(&ex8_mut);
+
+        timespec_add_usec(&wakeup, r_period_us);
+        clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &wakeup, NULL);
+
     }
     return NULL;
 }
 
 void * ex8_green(void * arg)
 {
+    struct timespec wakeup;
+    wakeup.tv_sec = ex5_ts.tv_sec;
+    wakeup.tv_nsec = ex5_ts.tv_nsec;
+
+    uint32_t g_period_ms = 500;
+    useconds_t g_period_us = g_period_ms * 1000;
+    uint32_t g_stress_ms = 50;
+    int v = LOW;
+
     while (running)
     {
-        sleep(1);
+        pthread_mutex_lock(&ex8_mut);
+        v = pin_invert(v);
+        cpu_stress(g_stress_ms);
+        digitalWrite(LED_G, v);
+        pthread_mutex_unlock(&ex8_mut);
+
+        timespec_add_usec(&wakeup, g_period_us);
+        clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &wakeup, NULL);
     }
-    return NULL;
 }
 
 void * ex8_blue(void * arg)
 {
+    struct timespec wakeup;
+    wakeup.tv_sec = ex5_ts.tv_sec;
+    wakeup.tv_nsec = ex5_ts.tv_nsec;
+
+    uint32_t b_period_ms = 200;
+    useconds_t b_period_us = b_period_ms * 1000;
+    uint32_t b_stress_ms = 50;
+    int v = LOW;
     while (running)
     {
-        sleep(1);
+        pthread_mutex_lock(&ex8_mut);
+        v = pin_invert(v);
+        cpu_stress(b_stress_ms);
+        digitalWrite(LED_B, v);
+        pthread_mutex_unlock(&ex8_mut);
+
+        timespec_add_usec(&wakeup, b_period_us);
+        clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &wakeup, NULL);
     }
-    return NULL;
 }
 
 
@@ -612,33 +661,97 @@ void * ex8_blue(void * arg)
 
 void   ex9_init()
 {
+    clock_gettime(CLOCK_REALTIME, &ex5_ts);
+    pthread_mutex_init(&ex9_mut_r, NULL);
+    pthread_mutex_init(&ex9_mut_g, NULL);
+    pthread_mutex_init(&ex9_mut_b, NULL);
+    pthread_mutex_lock(&ex9_mut_g);
+    pthread_mutex_lock(&ex9_mut_b);
 }
 
 void * ex9_red(void * arg)
 {
-    while (running)
+    struct timespec wakeup;
+    wakeup.tv_sec = ex5_ts.tv_sec;
+    wakeup.tv_nsec = ex5_ts.tv_nsec;
+
+    uint32_t r_period_ms = 500;
+    useconds_t r_period_us = r_period_ms * 1000;
+    int v = LOW;
+
+    while(running)
     {
-        sleep(1);
+        pthread_mutex_lock(&ex9_mut_r);
+
+        v = pin_invert(v);
+        digitalWrite(LED_R, v);
+
+        timespec_add_usec(&wakeup, r_period_us);
+        usleep(r_period_us);
+
+        pthread_mutex_unlock(&ex9_mut_b);
+
+        v = pin_invert(v);
+        digitalWrite(LED_R, v);
+
+
     }
     return NULL;
 }
 
 void * ex9_green(void * arg)
 {
+    struct timespec wakeup;
+    wakeup.tv_sec = ex5_ts.tv_sec;
+    wakeup.tv_nsec = ex5_ts.tv_nsec;
+
+    uint32_t g_period_ms = 500;
+    useconds_t g_period_us = g_period_ms * 1000;
+    int v = LOW;
+
     while (running)
     {
-        sleep(1);
+        pthread_mutex_lock(&ex9_mut_g);
+
+        v = pin_invert(v);
+        digitalWrite(LED_G, v);
+
+        timespec_add_usec(&wakeup, g_period_us);
+        usleep(g_period_us);
+
+        pthread_mutex_unlock(&ex9_mut_r);
+
+        v = pin_invert(v);
+        digitalWrite(LED_G, v);
     }
-    return NULL;
 }
 
 void * ex9_blue(void * arg)
 {
+    struct timespec wakeup;
+    wakeup.tv_sec = ex5_ts.tv_sec;
+    wakeup.tv_nsec = ex5_ts.tv_nsec;
+
+    uint32_t b_period_ms = 500;
+    useconds_t b_period_us = b_period_ms * 1000;
+    int v = LOW;
+
     while (running)
     {
-        sleep(1);
+        pthread_mutex_lock(&ex9_mut_b);
+
+        v = pin_invert(v);
+        digitalWrite(LED_B, v);
+
+        timespec_add_usec(&wakeup, b_period_us);
+        usleep(b_period_us);
+
+        pthread_mutex_unlock(&ex9_mut_g);
+
+        v = pin_invert(v);
+        digitalWrite(LED_B, v);
+
     }
-    return NULL;
 }
 
 
