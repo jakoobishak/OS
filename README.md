@@ -1,16 +1,16 @@
 # OS - Linux Commands
 
-## Lab 4
+## Lab 3 - UNIX
 
 ### Prep
 
 1. What command do you use to open the manual page for `kill`?
 
-   man kill
+   `man kill`
 
 2. What's `pwd` an abbreviation of?
 
-   pwd stands for Printing Working Directory.
+   `pwd` stands for Printing Working Directory.
 
 3. When using ls -l the first column is filled with a bunch of characters and dashes.
    What do they mean? What command can be used to modify them?
@@ -61,7 +61,7 @@
 
    A waterpipe where the water represents sequence of bytes sent from one process to the other.
 
-### Exercise 1
+### Exercise 1 - Environment Variables, $PATH and File Permissions
 
 1. What line you run to look at only the `$EDITOR` variable from `env`?
 
@@ -83,7 +83,7 @@
    The commands above returns: `--rwxr--r--` 744 \
    (744 is octal value)
 
-### Exercise 3
+### Exercise 3 - Links and Hidden Files
 
 1. What was the exact command used when creating the link?
    What's the order of the parameters when using the linking command?
@@ -96,7 +96,7 @@
 
    `~/.bashrc`: dest
 
-### Exercise 4
+### Exercise 4 - Computer Plumbing
 
 1. There are timestamps in the log from `dmesg`.
    They are not using EPOCH as their basis - when does time start for `dmesg`?
