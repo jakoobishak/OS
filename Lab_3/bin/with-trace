@@ -1,0 +1,24 @@
+#!/bin/bash
+LOGGER="lttng-sessiond"
+ARG_COUNT="$#"
+
+if pgrep -x $LOGGER 1> EX6.log
+then
+    if [ $# -gt 0 ]
+    then
+        if [ -x "$(command -v $1)" ]
+        then
+            echo "lttng create"
+            echo "More lttng things"
+            $*
+            echo "Even more lttng things"
+            echo "lttng destroy"
+        else
+            echo "No executable: $1"
+        fi
+    else
+        echo "Give args, plz"
+    fi
+else
+    echo "No $LOGGER..."
+fi

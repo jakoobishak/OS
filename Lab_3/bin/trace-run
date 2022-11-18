@@ -1,0 +1,8 @@
+#!/bin/bash
+export LD_PRELOAD=/usr/local/lib/*
+if [ $# -eq 0 ]
+then
+    echo "Error, no arguments found!"
+else
+    $*
+fi
