@@ -115,3 +115,95 @@
 4. What command did you use to look at the printout of `OUT.log` every second?
 
    `watch -n 1 "file.bin >> OUT.log 1>&1 | cat OUT.log"`
+
+### Exercise 5 - Plumbing With `xargs`
+
+1. When using cat on a file, to which file handle is the content sent?
+
+   Standard input to standard output.
+
+2. What parameter do you use to make `bash` execute a command (string)?
+
+   `-c`
+
+3. What was the full command for creating and announcing files?
+
+   `cat arguments | xargs -I line bash -c "touch line && echo line was created!"`
+
+4. What command did you use to remove the filenames listed in `arguments`?
+
+   `cat arguments | xargs -I line bash -c "rm line"`
+
+### Exercise 7 - Process Control
+
+1. Instead of stopping a process and putting it in the background manually,
+   you can do it by starting it in a certain way. How?
+
+   Add `"&"` character at the end. For example, `long-stress &`
+
+2. What command did you use to kill lots of jobs at once?
+
+   The command is `kill %{1..n}`. For instance, `kill %{1..20}` kills the first 20 jobs.
+
+### Exercise 8 ‐ File Ownership
+
+1. What `chown` command was used to change group ownership?
+
+   `chown jakoobi:tracing trace-beg`
+
+2. What `chmdod` command was used to change access rights?
+
+   `chmod u-rwx trace-beg` was used to remove [U]ser right to read, write and execute. \
+   `chmod g+rwx trace-beg` was used to add the [G]roup right to read, write and execute.
+
+3. What does the `x` flag mean for a directory?
+
+   Allows the affected user to enter the directory, and access its sub files and directories.
+
+### Exercise 9 A ‐ File Systems and Devices
+
+`fstab` holds settings for how all disks and partitions are to be mounted on boot.
+
+```
+$ cat /etc/fstab
+```
+
+1. How many partitions are mounted through fstab on boot, and what are their mount points?
+
+   The command above returns 2 rows, which means there is 2 mount points:
+
+   1. `/boot`
+   2. `/`
+
+2. Which is the file (because in UNIX every- thing is a file) in / dev / that is mounted at the root (/)?
+
+   `/dev/mmcblk0p2`
+
+3. What's a command that returns the last (tail) event in the system log (`dmesg`) pertaining to the device mounted at /?
+
+   `dmesg | grep / | tail -1`
+
+4. Which file system (IdType) does the `udisk` system report that your partition mounted at / uses?
+
+   ext4
+
+   The following commands were used to find out `file system (IdType)`:
+
+   1. `findmnt`
+   2. `udisks info -b SOURCE` (SOURCE from `findmnt`)
+
+### Exercise 9 B ‐ Memory
+
+System memory info command:
+
+```
+$ cat /proc/meminfo
+```
+
+1. How much memory (in MB, please) does meminfo report?
+
+   3883 MB
+
+2. What's the name for swap on a Windows system?
+
+   PAGEFILE (or page file)
