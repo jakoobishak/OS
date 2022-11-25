@@ -2,7 +2,7 @@
 LOGGER="lttng-sessiond"
 ARG_COUNT="$#"
 
-if pgrep -x $LOGGER 1> EX6.log
+if pgrep -x $LOGGER > null
 then
     if [ $# -gt 0 ]
     then
