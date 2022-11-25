@@ -69,7 +69,7 @@
 
 2. How can you use `export` to append something to your `$PATH`?
 
-   `PATH = $PATH:/new/path`
+   `export PATH = $PATH:/new/path`
 
 3. How did you make the file `welcome` runnable?
 
