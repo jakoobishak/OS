@@ -1,0 +1,2 @@
+../Core/Src/utilities.c:11:7:soundLevel	72	static
+../Core/Src/utilities.c:32:7:averageSamples	32	static
